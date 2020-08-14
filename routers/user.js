@@ -84,7 +84,6 @@ router.post("/updatePermissions",(req,res) => {
         var greenButton = req.body.greenButton
     
         permissionsController.addUserPermissions(userId,redButton,greenButton).then((result) => {
-            console.log(result);
             if(result == "SUCCESS")
             {
                 res.json({"STATUS":"SUCCESS"})         
