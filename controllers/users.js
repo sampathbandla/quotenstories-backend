@@ -1,6 +1,5 @@
 const mongoose = require("mongoose")
 const bcrypt = require('bcrypt');
-const saltRounds = 10;
 
 const userSchema = new mongoose.Schema({
     email: String,
@@ -15,14 +14,14 @@ module.exports.registerUser = function registerUser(userEmail,userPassword,userR
     return new Promise(async (resolve,reject) => {
         try{
             var userWithEmail = await userModel.findOne({email:userEmail})
-            var userPassword = bcrypt.hashSync(myPlaintextPassword, saltRounds)
+            userHashedPassword = bcrypt.hashSync(userPassword,10)
             if(userWithEmail)
             {
                 resolve({"STATUS":"ERROR","ERRMSG":"Email Already Exist!"})
             }
             else
             {
-                var newUser = new userModel({email:userEmail,password:userPassword,role:userRole})
+                var newUser = new userModel({email:userEmail,password:userHashedPassword,role:userRole})
                 newUser.save()
                 resolve({"STATUS":"SUCCESS"})
             }
