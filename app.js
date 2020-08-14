@@ -2,6 +2,7 @@ const express = require("express")
 const app = express()
 require('dotenv').config()
 const bodyParser = require("body-parser")
+const db = require("./controllers/db")
 
 app.use(bodyParser.urlencoded({ extended: false }))
 
