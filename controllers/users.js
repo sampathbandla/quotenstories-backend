@@ -23,7 +23,7 @@ module.exports.registerUser = function registerUser(userEmail,userPassword,userR
             {
                 var newUser = new userModel({email:userEmail,password:userHashedPassword,role:userRole})
                 newUser.save()
-                resolve({"STATUS":"SUCCESS"})
+                resolve({"STATUS":"SUCCESS","USER":newUser})
             }
         }
         catch(e)
@@ -44,7 +44,7 @@ module.exports.loginUser = function loginUser(userEmail,userPassword)
                 var passwordCheck = bcrypt.compareSync(userPassword,userWithEmail.password)
                 if(passwordCheck)
                 {
-                    resolve({"STATUS":"SUCESS","USER":userWithEmail})
+                    resolve({"STATUS":"SUCCESS","USER":userWithEmail})
                 }
                 else
                 {
