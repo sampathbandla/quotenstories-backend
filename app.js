@@ -1,12 +1,15 @@
 const express = require("express")
 const app = express()
+const cors = require("cors")
 require('dotenv').config()
 const bodyParser = require("body-parser")
 const db = require("./controllers/db")
 const userRouter = require("./routers/user")
-app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json({ extended: false }))
 
-app.listen(process.env.PORT|3000,(err) => {
+app.use(cors())
+
+app.listen(process.env.PORT|5000,(err) => {
     if(err) throw err
     console.log("App Started!");
 })

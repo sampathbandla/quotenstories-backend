@@ -65,3 +65,27 @@ module.exports.loginUser = function loginUser(userEmail,userPassword)
     })
 
 }
+
+
+module.exports.getCustomerList = function getCustomerList()
+{
+    return new Promise(async (resolve,reject) => {
+        try
+        {
+            var users = await userModel.find({role:"customer"})
+            if(users)
+            {
+                resolve({"STATUS":"SUCCESS","USERS": users})
+            }
+            else
+            {
+                resolve({"STATUS":"ERROR","ERRMSG":"User with Email Not Found!"})
+            }
+        }
+        catch(e)
+        {
+            resolve({"STATUS":"ERROR","ERRMSG":e})
+        }
+        
+    })
+}

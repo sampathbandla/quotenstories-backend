@@ -15,14 +15,14 @@ router.post("/register",(req,res) => {
             {
                 permissionsController.addUserPermissions(result.USER._id,true,true).then((status) => {
                     var token = jwt.sign(result,"s3cret")
-                    res.json({token})
+                    res.json({token,USER:result.USER})
                 })
             }
             else
             {
                 permissionsController.addUserPermissions(result.USER._id,false,true).then((status) => {
                     var token = jwt.sign(result,"s3cret")
-                    res.json({token})
+                    res.json({token,USER:result.USER})
                 })
             }
             
@@ -35,6 +35,7 @@ router.post("/register",(req,res) => {
 })
 
 router.post("/login",(req,res) => {
+    console.log(req.body);
     var userEmail = req.body.email
     var userPassword = req.body.password
 
@@ -42,7 +43,7 @@ router.post("/login",(req,res) => {
         if(result.STATUS == "SUCCESS")
         {
             var token = jwt.sign(result,"s3cret")
-            res.json({token})           
+            res.json({token,USER:result.USER})           
         }
         else
         {
@@ -51,14 +52,36 @@ router.post("/login",(req,res) => {
     })
 })
 
+router.post("/getLoggedUserPermissions",(req,res) => {
+    try
+    {
+        var userId = req.body.userId
+    
+        permissionsController.retriveLoggedUserPermissions(userId).then((result) => {
+            if(result.STATUS == "SUCCESS")
+            {
+                res.json(result)           
+            }
+            else
+            {
+                res.json({"ERROR":result.ERRMSG})
+            }
+        })
+    }
+    catch(e)
+    {
+        res.json({"ERROR":e})
+    }
+})
 
 router.post("/getPermissions",(req,res) => {
     try
     {
         var decoded = jwt.verify(req.body.token, 's3cret');
-        var userId = decoded.USER._id
+        var changinguserid = decoded.USER._id
+        var userId = req.body.userId
     
-        permissionsController.retrivePermissions(userId).then((result) => {
+        permissionsController.retrivePermissions(userId,changinguserid).then((result) => {
             if(result.STATUS == "SUCCESS")
             {
                 res.json(result)           
@@ -79,11 +102,13 @@ router.post("/updatePermissions",(req,res) => {
     try
     {
         var decoded = jwt.verify(req.body.token, 's3cret');
-        var userId = decoded.USER._id
+        var changinguserid = decoded.USER._id
+        var userId = req.body.userId
         var redButton = req.body.redButton
         var greenButton = req.body.greenButton
     
-        permissionsController.addUserPermissions(userId,redButton,greenButton).then((result) => {
+        permissionsController.addUserPermissions(userId,redButton,greenButton,changinguserid).then((result) => {
+            console.log(result);
             if(result == "SUCCESS")
             {
                 res.json({"STATUS":"SUCCESS"})         
@@ -93,6 +118,25 @@ router.post("/updatePermissions",(req,res) => {
                 res.json({"STATUS":"ERROR"})
             }
         })
+    }
+    catch(e)
+    {
+        res.json({"ERROR":e})
+    }
+})
+
+
+router.post("/getcustomerlist",(req,res) => {
+    try
+    {
+        var decoded = jwt.verify(req.body.token, 's3cret');
+        var userRole = decoded.USER.role
+        if(userRole == "admin")
+        {
+            userController.getCustomerList().then((result) => {
+                res.json(result)
+            })
+        }
     }
     catch(e)
     {

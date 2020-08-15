@@ -10,9 +10,17 @@ const permissionsSchema = new mongoose.Schema({
 
 const permissionsModel = mongoose.model("permissions",permissionsSchema)
 
-module.exports.addUserPermissions = function addUserPermissions(userId,redButton,greenButton){
+module.exports.addUserPermissions = function addUserPermissions(userId,redButton,greenButton,changinguserid){
     return new Promise(async (resolve,reject) => {
         try{
+            var userChanging = await userModel.findOne({_id:changinguserid})
+            if(userChanging)
+            {
+                if(userChanging.role != "admin")
+                {
+                    resolve({"STATUS":"ERROR","ERRMSG":"You were not admin!"})
+                }
+            } 
             var userWithID = await permissionsModel.findOne({userId})
             if(userWithID)
             {
@@ -44,7 +52,38 @@ module.exports.addUserPermissions = function addUserPermissions(userId,redButton
     })
 }
 
-module.exports.retrivePermissions = function retrivePermissions(userId)
+module.exports.retrivePermissions = function retrivePermissions(userId,changinguserid)
+{
+    return new Promise(async (resolve,reject) => {
+        try{
+            var userChanging = await userModel.findOne({_id:changinguserid})
+            if(userChanging)
+            {
+                if(userChanging.role != "admin")
+                {
+                    resolve({"STATUS":"ERROR","ERRMSG":"You were not admin!"})
+                }
+            } 
+            var userWithID = await permissionsModel.findOne({userId})
+           if(userWithID)
+           {
+               resolve({"STATUS":"SUCCESS","USER":userWithID})
+           }
+           else
+           {
+                resolve({"STATUS":"ERROR","ERRMSG":"User With That ID not present!"})
+           }
+        }
+        catch(e)
+        {
+            resolve("ERROR")
+        }
+    })
+}
+
+
+
+module.exports.retriveLoggedUserPermissions = function retriveLoggedUserPermissions(userId)
 {
     return new Promise(async (resolve,reject) => {
         try{
