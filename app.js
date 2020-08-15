@@ -9,7 +9,7 @@ app.use(bodyParser.json({ extended: false }))
 
 app.use(cors())
 
-app.listen(process.env.PORT|5000,(err) => {
+app.listen(process.env.PORT,(err) => {
     if(err) throw err
     console.log("App Started!");
 })
