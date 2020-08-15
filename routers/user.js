@@ -35,7 +35,6 @@ router.post("/register",(req,res) => {
 })
 
 router.post("/login",(req,res) => {
-    console.log(req.body);
     var userEmail = req.body.email
     var userPassword = req.body.password
 
@@ -108,7 +107,6 @@ router.post("/updatePermissions",(req,res) => {
         var greenButton = req.body.greenButton
     
         permissionsController.addUserPermissions(userId,redButton,greenButton,changinguserid).then((result) => {
-            console.log(result);
             if(result == "SUCCESS")
             {
                 res.json({"STATUS":"SUCCESS"})         
